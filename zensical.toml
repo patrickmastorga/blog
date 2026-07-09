@@ -1,0 +1,77 @@
+[project]
+
+site_name = "patrick's blog"
+site_description = "My math and programming focused blog."
+site_author = "Patrick Astorga"
+site_url = "https://patrickmastorga.github.io/blog/"
+
+extra_javascript = [
+    "javascripts/mathjax.js",
+    "https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"
+]
+
+[project.theme]
+variant = "classic"
+
+# The favicon must be a relative path to a file in your "docs_dir"
+#favicon = "images/favicon.png"
+
+# The logo must be a relative path to a file in your "docs_dir"
+#logo = "assets/logo.png"
+# or
+#[project.theme.icon]
+#logo = "lucide/smile"
+
+[[project.theme.palette]]
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+
+features = [
+    # https://zensical.org/docs/setup/repository/#content-actions
+    "content.action.view",
+
+    # https://zensical.org/docs/authoring/code-blocks/#code-annotations-zensicaltoml
+    "content.code.annotate",
+
+    # https://zensical.org/docs/authoring/code-blocks/#code-copy-button
+    "content.code.copy",
+
+    # https://zensical.org/docs/setup/navigation/#navigation-expansion
+    "navigation.expand",
+
+    # https://zensical.org/docs/setup/navigation/#instant-navigation
+    "navigation.instant",
+
+    # https://zensical.org/docs/setup/navigation/#progress-indicator
+    "navigation.instant.progress",
+
+    # https://zensical.org/docs/setup/navigation/#navigation-sections
+    "navigation.sections",
+
+    # https://zensical.org/docs/setup/search/#search-highlighting
+    "search.highlight",
+]
+
+[project.markdown_extensions.toc]
+permalink = true
+[project.markdown_extensions.pymdownx.arithmatex]
+generic = true
+[project.markdown_extensions.pymdownx.inlinehilite]
+[project.markdown_extensions.pymdownx.highlight]
+anchor_linenums = true
+line_spans = "__span"
+pygments_lang_class = true
+[project.markdown_extensions.pymdownx.tabbed]
+alternate_style = true
+[project.markdown_extensions.pymdownx.superfences]
+[project.markdown_extensions.footnotes]
+[project.markdown_extensions.pymdownx.caret]
+[project.markdown_extensions.pymdownx.keys]
+[project.markdown_extensions.pymdownx.mark]
+[project.markdown_extensions.pymdownx.tilde]
