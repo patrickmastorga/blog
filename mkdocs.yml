@@ -1,5 +1,8 @@
-site_name: Patrick's Blog
+site_name: patrick's blog
 site_url: https://patrickmastorga.github.io/blog/
+
+hooks:
+  - hooks.py
 
 theme:
   name: material
