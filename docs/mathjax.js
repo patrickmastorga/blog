@@ -7,7 +7,6 @@ window.MathJax = {
         macros: {
             R: "{\\mathbb{R}}",
             C: "{\\mathbb{C}}",
-            ppp: "{\\mathbb{ppp}}",
         }
     },
     options: {
