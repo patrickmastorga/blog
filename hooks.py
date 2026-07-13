@@ -30,6 +30,9 @@ def on_nav(nav, config, files):
             "title": p.title,
             "url": f"{site_url.rstrip('/')}/{p.url.lstrip('/')}",
             "date": p.meta.get("date").isoformat() if p.meta.get("date") else None,
+            "categories": [cat.name for cat in p.categories]
+            if hasattr(p, "categories") and p.categories
+            else [],
         }
         for p in posts_pages
     ]

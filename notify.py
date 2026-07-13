@@ -35,8 +35,20 @@ recent_posts = [
     if p["date"] and datetime.fromisoformat(p["date"]).date() == most_recent_date.date()
 ]
 
+
 # Construct the email body
-posts_list = "\n".join([f"- [{p['title']}]({p['url']})" for p in recent_posts])
+def format_post(p):
+    title = p["title"]
+    url = p["url"]
+    categories = p.get("categories", [])
+    if categories:
+        cats = ", ".join(categories)
+        return f"- [{title}]({url}) in [{cats}]"
+    else:
+        return f"- [{title}]({url})"
+
+
+posts_list = "\n".join([format_post(p) for p in recent_posts])
 
 body = f"""New post{"s" if len(recent_posts) > 1 else ""} published:
 
