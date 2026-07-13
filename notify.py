@@ -43,11 +43,11 @@ def format_post(p):
     categories = p.get("categories", [])
     if categories:
         cats = ", ".join(categories)
-        return f"- [{title}]({url}) in [{cats}]"
+        return f"- [{title}]({url}) in {cats}"
     else:
         return f"- [{title}]({url})"
 
- 
+
 posts_list = "\n".join([format_post(p) for p in recent_posts])
 
 body = f"""New post{"s" if len(recent_posts) > 1 else ""} published:
