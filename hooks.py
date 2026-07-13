@@ -1,4 +1,6 @@
+import json
 import logging
+import os
 
 from mkdocs.plugins import event_priority
 from mkdocs.structure.nav import Section
@@ -20,6 +22,26 @@ def on_nav(nav, config, files):
         posts_pages.sort(key=lambda p: p.meta.get("date"), reverse=True)
     except Exception as e:
         log.warning(f"Failed to sort some blog posts by date: {e}")
+
+    # output posts to JSON file
+    site_url = config.get("site_url", "")
+    posts_data = [
+        {
+            "title": p.title,
+            "url": f"{site_url.rstrip('/')}/{p.url.lstrip('/')}",
+            "date": p.meta.get("date").isoformat() if p.meta.get("date") else None,
+        }
+        for p in posts_pages
+    ]
+
+    # ensure site directory exists
+    site_dir = "site"
+    os.makedirs(site_dir, exist_ok=True)
+
+    posts_json_path = os.path.join(site_dir, "posts.json")
+    with open(posts_json_path, "w") as f:
+        json.dump(posts_data, f, indent=2)
+    log.info(f"Written {len(posts_data)} posts to {posts_json_path}")
 
     # construct the "posts" sidebar section
     if posts_pages:

@@ -12,9 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
+      - name: Build site
+        run: uv run mkdocs build
       - name: Send via Buttondown API
         env:
           # Add this in your GitHub repo settings: Secrets and variables > Actions
           BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-        run: uv run --with requests notify.py
+        run: uv run notify.py
