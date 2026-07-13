@@ -1,0 +1,20 @@
+name: Send Notification
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  send-email:
+    # The action only runs if the commit message contains [newsletter]
+    if: contains(github.event.head_commit.message, '[notify]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Send via Buttondown API
+        env:
+          # Add this in your GitHub repo settings: Secrets and variables > Actions
+          BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        run: uv run --with requests notify.py
