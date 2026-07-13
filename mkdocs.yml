@@ -1,4 +1,5 @@
 site_name: patrick's blog
+site_description: Personal notes and educational content on math and programming.
 site_url: https://patrickmastorga.github.io/blog/
 
 hooks:
@@ -17,6 +18,13 @@ plugins:
       categories_name: categories
       post_readtime: false
       archive: false
+  - rss:
+      match_path: posts/.*
+      categories:
+        - categories
+        - tags
+      date_from_meta:
+        as_creation: date
 
 markdown_extensions:
   - pymdownx.arithmatex:  # Wraps math syntax for MathJax extraction
