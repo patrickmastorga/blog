@@ -1,0 +1,26 @@
+[
+  {
+    "title": "monte carlo tree search",
+    "url": "https://patrickmastorga.github.io/blog/2026/07/12/monte-carlo-tree-search/",
+    "date": "2026-07-12",
+    "categories": [
+      "math"
+    ]
+  },
+  {
+    "title": "things about rust",
+    "url": "https://patrickmastorga.github.io/blog/2026/07/11/things-about-rust/",
+    "date": "2026-07-11",
+    "categories": [
+      "programming"
+    ]
+  },
+  {
+    "title": "chess, again",
+    "url": "https://patrickmastorga.github.io/blog/2026/07/09/chess-again/",
+    "date": "2026-07-09",
+    "categories": [
+      "programming"
+    ]
+  }
+]
