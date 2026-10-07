@@ -17,9 +17,10 @@ def on_nav(nav, config, files):
         if f.is_documentation_page() and f.page and type(f.page).__name__ == "Post"
     ]
 
-    # sort reverse chronologically
+    # Sort reverse chronologically. Distinct creation times in post metadata
+    # determine the ordering of posts published on the same day.
     try:
-        posts_pages.sort(key=lambda p: p.meta.get("date"), reverse=True)
+        posts_pages.sort(key=lambda p: p.config.date.created, reverse=True)
     except Exception as e:
         log.warning(f"Failed to sort some blog posts by date: {e}")
 
@@ -29,7 +30,9 @@ def on_nav(nav, config, files):
         {
             "title": p.title,
             "url": f"{site_url.rstrip('/')}/{p.url.lstrip('/')}",
-            "date": p.meta.get("date").isoformat() if p.meta.get("date") else None,
+            "date": p.config.date.created.isoformat()
+            if p.config.date.created
+            else None,
             "categories": [cat.name for cat in p.categories]
             if hasattr(p, "categories") and p.categories
             else [],

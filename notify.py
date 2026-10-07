@@ -22,7 +22,8 @@ if not posts:
     print("No posts found.")
     sys.exit(0)
 
-# Find the most recent date and get all posts with that date
+# Find the most recent date and get all posts with that date. The newsletter
+# is chronological (oldest first), unlike the site's reverse-chronological list.
 dates = [datetime.fromisoformat(p["date"]) for p in posts if p["date"]]
 if not dates:
     print("No posts with dates found.")
@@ -34,6 +35,7 @@ recent_posts = [
     for p in posts
     if p["date"] and datetime.fromisoformat(p["date"]).date() == most_recent_date.date()
 ]
+recent_posts.sort(key=lambda p: datetime.fromisoformat(p["date"]))
 
 
 # Construct the email body
@@ -50,10 +52,7 @@ def format_post(p):
 
 posts_list = "\n".join([format_post(p) for p in recent_posts])
 
-body = f"""New post{"s" if len(recent_posts) > 1 else ""} published:
-
-{posts_list}
-"""
+body = f"New post{'s' if len(recent_posts) > 1 else ''} published:\n\n{posts_list}"
 
 url = "https://api.buttondown.com/v1/emails"
 headers = {
