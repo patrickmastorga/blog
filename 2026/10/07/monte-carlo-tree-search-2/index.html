@@ -1,0 +1,1134 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="personal notes and educational content on math and programming.">
+      
+      
+      
+        <link rel="canonical" href="https://patrickmastorga.github.io/blog/2026/10/07/monte-carlo-tree-search-2/">
+      
+      
+        <link rel="prev" href="../noting-my-absence/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>monte carlo tree search 2 - patrick's blog</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#monte-carlo-tree-search-2" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="patrick&#39;s blog" class="md-header__button md-logo" aria-label="patrick's blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            patrick's blog
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              monte carlo tree search 2
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="patrick&#39;s blog" class="md-nav__button md-logo" aria-label="patrick's blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    patrick's blog
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    patrick's blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    categories
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    categories
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/math/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    math
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/programming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    programming
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    posts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    posts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    monte carlo tree search 2
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    monte carlo tree search 2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#two-player-turn-based-zero-sum-games" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        two-player, turn-based, zero-sum games
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chess" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        chess
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="chess">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        why?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#minimax-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        minimax search
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deep-neural-networks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        deep neural networks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#policy-upper-confidence-bound" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        policy + upper confidence bound
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="policy + upper confidence bound">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        algorithm
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../noting-my-absence/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    noting my absence
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../07/12/monte-carlo-tree-search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    monte carlo tree search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../07/11/the-rust-programming-language/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    the rust programming language
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../07/09/chess-again/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    chess, again
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#two-player-turn-based-zero-sum-games" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        two-player, turn-based, zero-sum games
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chess" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        chess
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="chess">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        why?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#minimax-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        minimax search
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deep-neural-networks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        deep neural networks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#policy-upper-confidence-bound" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        policy + upper confidence bound
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="policy + upper confidence bound">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        algorithm
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../.." class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to index
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2026-10-07 10:00:00+00:00" class="md-ellipsis">October 7, 2026</time>
+                      </div>
+                    </li>
+                    
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg>
+                          <span class="md-ellipsis">
+                            in
+                            
+                              <a href="../../../../category/programming/">programming</a></span>
+                        </div>
+                      </li>
+                    
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+            
+          </nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
+  
+
+
+
+
+<h1 id="monte-carlo-tree-search-2">monte carlo tree search 2</h1>
+<h2 id="two-player-turn-based-zero-sum-games">two-player, turn-based, zero-sum games</h2>
+<p>Up to now we've been considering a single agent maximizing a single objective function, where the
+net change to that objective function after every step is given by the reward function. It turns out
+we can pretty easily extend MDPs to account for more than one objective function. In the jargon of
+game theory, I'll introduce a concept called a "two-player, turn-based, zero-sum game." A two-player
+game means there are exactly two agents, each maximizing their own objective function. A turn-based
+game means only one agent can take an action in a given state, and the right to act switches with
+every action. We will refer to this agent as the "side to move" of a state. Finally, a zero-sum game
+means that the gains of one agent equal exactly the losses of the other agent.</p>
+<p>In particular, <span class="arithmatex">\(\mathcal{S}, \mathcal{A}\)</span>, and <span class="arithmatex">\(\mathcal{T}\)</span> remain the same, except now each state
+<span class="arithmatex">\(s \in S\)</span> also has a "side to move" associated with it. But now, we let <span class="arithmatex">\(R(s, a, s')\)</span> be the net
+change to the objective function belonging to the <em>side to move of</em> <span class="arithmatex">\(s\)</span> after taking action <span class="arithmatex">\(a\)</span> from
+state <span class="arithmatex">\(s\)</span> and landing in state <span class="arithmatex">\(s'\)</span>, which is exactly the opposite of the net change to the
+objective function belonging to the <em>side to move of</em> <span class="arithmatex">\(s'\)</span>, since the game is zero-sum. In other
+words, zero-sum means that both players essentially have the same objective function, and one player
+is trying to maximize it and the other player is trying to minimize it.</p>
+<p>Naturally, the optimal policy <span class="arithmatex">\(\pi^*(s)\)</span> is the action which maximizes the expected value of the
+objective function belonging to the <em>side to move of</em> <span class="arithmatex">\(s\)</span>. The associated Bellman equations are
+therefore:</p>
+<div class="arithmatex">\[
+\pi^*(s) = \arg\max_{a \in \mathcal{A}(s)} Q^*(s, a)
+\]</div>
+<div class="arithmatex">\[
+V^*(s) = \max_{a \in \mathcal{A}(s)} Q^*(s, a)
+\]</div>
+<div class="arithmatex">\[
+Q^*(s, a) = \sum_{s' \in \mathcal{S}}\mathcal{T}(s, a, s')(\mathcal{R}(s, a, s') - V^*(s'))
+\]</div>
+<p>The only thing that changes is the negative sign in front of <span class="arithmatex">\(V^*(s')\)</span>, representing the adversarial
+zero-sum nature of the game.</p>
+<h2 id="chess">chess</h2>
+<p>For reasons we'll get into later, we want to represent <a href="../../../07/09/chess-again/">chess</a> as an MDP. Well,
+chess is naturally a two-player, turn-based, zero-sum game. We can let each state
+<span class="arithmatex">\(s \in \mathcal{S}\)</span> be a chess position. Actions <span class="arithmatex">\(a \in \mathcal{A}(s)\)</span> are legal chess moves. Chess
+moves are deterministic, so transition probabilities <span class="arithmatex">\(\mathcal{T}(s, a, s')\)</span> are zero for all <span class="arithmatex">\(s'\)</span>
+except for one. For simplicity, denote this position as <span class="arithmatex">\(s' = T(s, a)\)</span>. All we care about is the
+final outcome, so rewards <span class="arithmatex">\(\mathcal{R}(s, a, s')\)</span> are zero except for when <span class="arithmatex">\(s'\)</span> is a terminal state.
+If <span class="arithmatex">\(s'\)</span> is checkmate, then <span class="arithmatex">\(\mathcal{R}(s, a, s')\)</span> is <span class="arithmatex">\(1\)</span>. If <span class="arithmatex">\(s'\)</span> is a draw, then
+<span class="arithmatex">\(\mathcal{R}(s, a, s')\)</span> is <span class="arithmatex">\(0\)</span>. The action value simplifies to</p>
+<div class="arithmatex">\[
+Q^*(s, a) = \mathcal{R}(s, a, s') - V^*(s'), \quad s' = T(s, a)
+\]</div>
+<p><span class="arithmatex">\(V^*(s)\)</span> can equal either -1, 0, or 1. <span class="arithmatex">\(V^*(s) = 1\)</span> if the side to move of <span class="arithmatex">\(s\)</span> has the ability to
+force a win no matter the opponent's moves. <span class="arithmatex">\(V^*(s) = -1\)</span> if the side to move of <span class="arithmatex">\(s\)</span> has no ability
+to prevent a loss if the opponent makes the right moves. <span class="arithmatex">\(V^*(s) = 0\)</span> if neither is true.</p>
+<h3 id="why">why?</h3>
+<p>I promised I'd answer the question: "Why do we want to formulate chess as an MDP?" The answer is
+that we want to use <a href="../../../07/12/monte-carlo-tree-search/">Monte Carlo tree search</a> to compute the best move! Well, if
+you're a smart guy or gal, you'd ask: "Why do we want to use Monte Carlo tree search to compute the
+best move?"</p>
+<h3 id="minimax-search">minimax search</h3>
+<p>If you look at the Bellman equation for chess, it's quite simple. In fact, there's no "expectation"
+to even compute! It's merely a matter of considering all sequences of legal moves, and checking
+whether or not a player can force a win. One could program an exact solution to this MDP with
+something like</p>
+<div class="language-python highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">compute_value</span><span class="p">(</span><span class="n">pos</span><span class="p">):</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="k">if</span> <span class="n">is_checkmate</span><span class="p">(</span><span class="n">pos</span><span class="p">):</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="k">if</span> <span class="n">is_draw</span><span class="p">(</span><span class="n">pos</span><span class="p">):</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="k">return</span> <span class="mi">0</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">'-inf'</span><span class="p">)</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="k">for</span> <span class="n">move</span> <span class="ow">in</span> <span class="n">legal_moves</span><span class="p">(</span><span class="n">pos</span><span class="p">):</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="n">next_pos</span> <span class="o">=</span> <span class="n">make_move</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">move</span><span class="p">)</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="n">value</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">-</span><span class="n">compute_value</span><span class="p">(</span><span class="n">next_pos</span><span class="p">))</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="k">return</span> <span class="n">value</span>
+</code></pre></div>
+<p>However, if you know anything about chess, you'd know that the number of sequences of legal moves is
+astronomically large for most positions. What one can do is create a heuristic function which
+outputs a number in <span class="arithmatex">\([-1, 1]\)</span> which is a guess for the value of the current position. It is allowed
+to be outside of -1, 0, and 1 to allow for uncertainty. The closer the heuristic is to 1 the closer
+the position should be to being winning for the current side to move, and vice versa. This heuristic
+is usually hand-coded by chess experts to take into account things like the number of pieces left on
+the board and their locations. The idea is that this heuristic should become more accurate the
+closer the position is to being terminal. If you consider sequences of moves of a certain length
+(which can be manageable in size), you can assign their terminal value with the heuristic. Then the
+deeper you search, the more accurate your final result should be.</p>
+<div class="language-python highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">compute_value</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">depth</span><span class="p">):</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="k">if</span> <span class="n">is_checkmate</span><span class="p">(</span><span class="n">pos</span><span class="p">):</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="k">if</span> <span class="n">is_draw</span><span class="p">(</span><span class="n">pos</span><span class="p">):</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>        <span class="k">return</span> <span class="mi">0</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="n">MAX_DEPTH</span><span class="p">:</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="k">return</span> <span class="n">heuristic</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">'-inf'</span><span class="p">)</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="k">for</span> <span class="n">move</span> <span class="ow">in</span> <span class="n">legal_moves</span><span class="p">(</span><span class="n">pos</span><span class="p">):</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>        <span class="n">next_pos</span> <span class="o">=</span> <span class="n">make_move</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">move</span><span class="p">)</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>        <span class="n">value</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">-</span><span class="n">compute_value</span><span class="p">(</span><span class="n">next_pos</span><span class="p">,</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="k">return</span> <span class="n">value</span>
+</code></pre></div>
+<p>This idea is known as <a href="https://chessprogramming.org/Minimax">minimax search</a>, and it is exactly how
+essentially all dominant chess engines worked for the majority of computer science history.</p>
+<h3 id="deep-neural-networks">deep neural networks</h3>
+<p>In 2012 with the release of <a href="https://en.wikipedia.org/wiki/AlexNet">AlexNet</a>, deep neural networks
+began to become the dominant force in artificial intelligence. In fact, with a big enough dataset of
+previously analyzed chess positions, one can easily train a deep neural network that greatly
+outperforms any hand-coded heuristic function from the previous section in terms of accuracy.
+However, at least two things go wrong if one attempts a replacement:</p>
+<ol>
+<li>
+<p>There is a massive tradeoff with speed. Deep neural networks are typically much more
+   computationally intensive than a hand-coded heuristic, so the number of positions analyzed must
+   be cut down greatly. In minimax search this means that the depth must be decreased.</p>
+</li>
+<li>
+<p>Deep neural networks are inherently noisy. Minimax search computes the exact maximum at every
+   step, meaning that one single noisy evaluation in the wrong line could throw the algorithm off
+   the best move.</p>
+</li>
+</ol>
+<p>I propose that <a href="../../../07/12/monte-carlo-tree-search/">Monte Carlo tree search</a> is much more compatible with these two
+things. Look at step 3 in the algorithm at the bottom of the previous post: simulation. It should be
+well agreed upon that such a random rollout is already quite computationally intensive and highly
+variable. Suppose that one replaced such a rollout with a neural network that predicts the expected
+result, similar to the way we used a heuristic in minimax. Then:</p>
+<ol>
+<li>
+<p>Since we are greatly limited in our search, common sense would say to spend more time considering
+   sequences of moves that are likely to be played on the board. Minimax search considers all
+   sequences to roughly the same depth. Monte Carlo tree search naturally searches the most
+   promising sequences the deepest due to the UCB metric.</p>
+</li>
+<li>
+<p>In Monte Carlo tree search, action values are taken as the average of the reward estimates
+   evaluated stemming from a particular move. Therefore the inherent noise from the deep neural
+   network is almost completely averaged away.</p>
+</li>
+</ol>
+<h3 id="policy-upper-confidence-bound">policy + upper confidence bound</h3>
+<p>While it's true that Monte Carlo tree search is naturally good at spending more time searching
+promising variations, it's also true that often quite a large number of iterations is needed before
+the algorithm starts to do this. At the beginning of the search, all of the exploration terms are
+high, and hence bad moves are searched almost as much as good moves are.</p>
+<p>Since every expanded node gets fed into a deep neural network initially, it's cheap to add a <em>policy
+head</em> which outputs a probability distribution <span class="arithmatex">\(P(s, a)\)</span> over the legal moves <span class="arithmatex">\(a \in A(s)\)</span>,
+predicting the actions that are likely to be good. If we penalize the exploration terms of low
+probability moves, then we tend to get our desired behavior more quickly, making the algorithm more
+efficient. First introduced in a paper called
+<a href="https://link.springer.com/article/10.1007/s10472-011-9258-6">Multi-armed Bandits with Episode Context</a>
+and reformulated in the <a href="https://arxiv.org/abs/1712.01815">AlphaZero</a> paper, was a reformulation of
+the upper confidence bound called the Policy + Upper Confidence bound for Trees (PUCT)</p>
+<div class="arithmatex">\[
+PUCT(s, a) = Q(s, a) + c_{\text{puct}}P(s, a)\sqrt{\frac{\ln(N(s))}{N(s, a)}}
+\]</div>
+<h4 id="algorithm">algorithm</h4>
+<p>An algorithm to implement Monte Carlo tree search with PUCT for chess would look like this. We store
+the tree in memory, which grows in size as the algorithm runs. Each node in the tree stores the
+following information:</p>
+<ul>
+<li><span class="arithmatex">\(N(s)\)</span>, the number of simulations which reached node <span class="arithmatex">\(s\)</span>, initialized to 0.</li>
+<li>For all actions <span class="arithmatex">\(a\)</span> from node <span class="arithmatex">\(s\)</span>: <span class="arithmatex">\(N(s, a)\)</span>, the number of times action <span class="arithmatex">\(a\)</span> was taken from node
+  <span class="arithmatex">\(s\)</span> over all simulations, initialized to 0.</li>
+<li>For all actions <span class="arithmatex">\(a\)</span> from node <span class="arithmatex">\(s\)</span>: <span class="arithmatex">\(Q(s, a)\)</span>, the empirical average action value over all
+  simulations, initialized to 0.</li>
+<li><span class="arithmatex">\(V(s)\)</span>, the estimated value of <span class="arithmatex">\(s\)</span>, computed by the deep neural network when the node is
+  initialized.</li>
+<li>For all actions <span class="arithmatex">\(a\)</span> from node <span class="arithmatex">\(s\)</span>: <span class="arithmatex">\(P(s, a)\)</span>, the policy value of action <span class="arithmatex">\(a\)</span>, computed by the deep
+  neural network when the node is initialized.</li>
+</ul>
+<p>The tree starts out as only the root node. Repeat the following steps until time runs out:</p>
+<ol>
+<li>
+<p><strong>Selection:</strong> Start from the root node <span class="arithmatex">\(s\)</span>. If any action from <span class="arithmatex">\(s\)</span> is unexplored, choose the
+    one with the highest policy value. If all actions from <span class="arithmatex">\(s\)</span> have been explored, then let</p>
+<div class="arithmatex">\[
+a^*(s) = \arg\max_{a \in \mathcal{A}(s)} PUCT(s, a)
+\]</div>
+<p>and take action <span class="arithmatex">\(a^*(s)\)</span>. After taking <span class="arithmatex">\(a^*(s)\)</span>, you reach a new state <span class="arithmatex">\(s'\)</span>. Repeat this
+selection process until an unexplored state is reached.</p>
+</li>
+<li>
+<p><strong>Expansion:</strong> If an unexplored state <span class="arithmatex">\(s_N\)</span> is reached, then add it to the tree.</p>
+</li>
+<li>
+<p><strong>Backpropagation:</strong> For each state-action pair <span class="arithmatex">\((s_i, a_i)\)</span>, <span class="arithmatex">\(i = 0, \ldots, N - 1\)</span>, in the
+    traversal leading to <span class="arithmatex">\(s_N\)</span>, perform the following updates</p>
+<div class="arithmatex">\[
+N(s_i) \leftarrow N(s_i) + 1
+\]</div>
+<div class="arithmatex">\[
+N(s_i, a_i) \leftarrow N(s_i, a_i) + 1
+\]</div>
+<div class="arithmatex">\[
+Q(s_i, a_i) \leftarrow Q(s_i, a_i) + \frac{(-1)^{T - i} V(s_T) - Q(s_i, a_i)}{N(s_i, a_i)}
+\]</div>
+</li>
+</ol>
+<p>Once you are done searching, choose the action <span class="arithmatex">\(a\)</span> such that <span class="arithmatex">\(Q(s, a)\)</span> is the highest.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+      
+    </article>
+  </div>
+
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.indexes", "navigation.expand"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../../../mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
